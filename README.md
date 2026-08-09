@@ -92,6 +92,57 @@ held-out validation yet to even measure real generalization. That gap is
 exactly what the next steps (validation split, more training data via
 report-derived labels, a pretrained backbone) are meant to close.
 
+### v2 — held-out validation
+
+Same model, but an honest 80/20 train/val split (46/12 studies) instead of
+training loss as the only signal, with per-label ROC AUC computed on the
+held-out 12 (labels with only one class present in that tiny split are
+skipped rather than silently scored as a meaningless 0.5/undefined AUC).
+
+### v3 — caching + a real GPU
+
+v2 ran at ~90s/epoch. Two fixes, both driven by profiling that number rather
+than guessing:
+
+- **In-memory tensor caching.** v1/v2 re-decoded every study's DICOMs from
+  scratch on *every* epoch, even though the images never change between
+  epochs. Measured locally: ~2.4s to decode one study cold, <0.001ms to read
+  it back from an in-memory cache after that — decoding was almost certainly
+  the actual bottleneck, not the (tiny) model itself.
+- **A GPU that's actually used.** `enable_gpu: true` got us a P100, but its
+  compute capability (sm_60) isn't supported by the CUDA kernels in Kaggle's
+  pre-installed PyTorch build, so v1/v2 silently fell back to CPU *while
+  still burning P100 quota hours for nothing*. v3 installs an older
+  torch+cu121 build (`torch==2.3.1`, still ships sm_60 kernels) before torch
+  is ever imported. Confirmed working: `torch_version: "2.3.1+cu121"`,
+  `device: "cuda"` in `results/v3/history_v3.json`. (Needs internet enabled
+  for this dev/training kernel specifically — never for the eventual
+  no-internet submission notebook.)
+
+Concrete result: v3 finished its full 20-epoch run *before v2 did*, on the
+same P100 class of hardware v2 had silently downgraded away from.
+
+![train loss vs val AUC](results/v3/history_curve.png)
+
+This plot is the real payoff of adding validation in v2: it's a textbook
+overfitting curve. Training loss falls smoothly the entire time (0.652 →
+0.572), while held-out validation AUC never crosses the 0.5 random-guess
+line and shows no upward trend, drifting noisily between roughly 0.34 and
+0.43. The model is getting better at fitting the 46 training studies and
+*not* better at generalizing to studies it hasn't seen — exactly what you'd
+expect from a from-scratch CNN with no pretrained features and only 46
+training examples for a 12-label problem. Per-label AUC on the final epoch
+swings wildly (`PF OA` 0.69, `Medial OA` 0.09) which is itself informative:
+with only ~12 validation studies, per-label AUC is estimated from a handful
+of examples and is far too noisy to read individual numbers as meaningful —
+only the aggregate pattern (consistently at/below 0.5, no trend) is.
+
+This is the concrete, measured case for the next two planned steps: more
+training data (report-derived labels for the other 4,349 studies) and a
+pretrained backbone, in that order — a from-scratch CNN on 46 examples
+structurally cannot generalize much better than this, no matter how long
+it trains.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

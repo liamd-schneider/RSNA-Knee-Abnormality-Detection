@@ -1,0 +1,142 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6525285010752471,
+      "val_macro_auc": 0.4297453703703704,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6247051818215329,
+      "val_macro_auc": 0.4255059523809524,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6210421116455741,
+      "val_macro_auc": 0.349837962962963,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.6193131007578062,
+      "val_macro_auc": 0.37992394179894184,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.6163798551196638,
+      "val_macro_auc": 0.36278108465608466,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6146778256996818,
+      "val_macro_auc": 0.36037367724867725,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.6120448812194492,
+      "val_macro_auc": 0.36135251322751316,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.6098837314740472,
+      "val_macro_auc": 0.3973809523809524,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.6070867433496143,
+      "val_macro_auc": 0.37911706349206353,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.6063601251529611,
+      "val_macro_auc": 0.3480886243386243,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.604933662906937,
+      "val_macro_auc": 0.33952380952380956,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.6008670692858489,
+      "val_macro_auc": 0.37925595238095233,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.5977797832178033,
+      "val_macro_auc": 0.35760582010582015,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.5936789227568585,
+      "val_macro_auc": 0.36086640211640214,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.5903645028238711,
+      "val_macro_auc": 0.3645701058201058,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.5876097432945085,
+      "val_macro_auc": 0.3689021164021164,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.5835584421520648,
+      "val_macro_auc": 0.38121693121693123,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.5801730214253716,
+      "val_macro_auc": 0.3723346560846561,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 19,
+      "train_loss": 0.5759446990230809,
+      "val_macro_auc": 0.38840277777777776,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.5723899622326312,
+      "val_macro_auc": 0.39786706349206347,
+      "n_labels_scored": 10
+    }
+  ],
+  "best_val_macro_auc": 0.4297453703703704,
+  "best_epoch": 1,
+  "final_per_label_auc": {
+    "ACL": 0.40740740740740744,
+    "MCL": 0.3703703703703704,
+    "Medial Meniscus": 0.2571428571428572,
+    "Lateral Meniscus": 0.28125,
+    "Medial OA": 0.09375,
+    "PF OA": 0.6875,
+    "Effusion": 0.59375,
+    "Synovitis": 0.4375,
+    "Baker's": 0.35000000000000003,
+    "Contusion": 0.5
+  },
+  "n_train": 46,
+  "n_val": 12,
+  "torch_version": "2.3.1+cu121",
+  "device": "cuda"
+}

@@ -12,7 +12,10 @@ LABELS = ["ACL", "MCL", "Medial Meniscus", "Lateral Meniscus", "Medial OA",
 
 
 def main():
-    train = pd.read_csv("data/train.csv")
+    # train.csv is latin-1 encoded, not UTF-8 -- reading it with the pandas
+    # default silently mangles every accented character in the (multilingual)
+    # Report column instead of raising, which is easy to miss.
+    train = pd.read_csv("data/train.csv", encoding="latin-1")
     series = pd.read_csv("data/train_series.csv")
 
     labeled = train.dropna(subset=LABELS, how="all")

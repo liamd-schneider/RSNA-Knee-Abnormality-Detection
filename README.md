@@ -60,3 +60,10 @@ Repo scaffolded, Kaggle API working, metadata pulled locally. First real numbers
 Next: build the smallest possible end-to-end pipeline (train on the 58 labeled
 studies only, one series per study, simple CNN) to get a real `submission.csv`
 out the door, before touching label extraction from reports or fancier models.
+
+## License
+
+Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself
+is *not* covered by that license and stays subject to the RSNA MIRA license
+referenced on the [competition data page](https://www.kaggle.com/competitions/rsna-knee-abnormality-detection/data) —
+this repo never contains DICOMs or other competition data, only code.

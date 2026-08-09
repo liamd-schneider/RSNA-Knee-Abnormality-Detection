@@ -29,8 +29,16 @@ The dataset is ~570 GB of DICOMs, and this machine has no GPU. So the split is:
 
 ## Layout
 
-- `notebooks/` — exported Kaggle notebooks (EDA, baseline, experiments)
-- `src/` — reusable Python modules (dataset loading, model, training loop)
+- `notebooks/` — exported Kaggle notebooks (EDA, baseline, experiments) and
+  `reference-notes.md`, a distilled write-up of a public top-scoring solution
+  used as a rough roadmap
+- `src/` — reusable Python modules (DICOM reading, dataset, model, EDA,
+  log-plotting) — the "clean" version of the code, used for local dev/testing
+- `kernels/<name>/` — self-contained scripts actually pushed to Kaggle to run
+  with GPU + the full competition data mounted (`kaggle kernels push`); each
+  is functionally the same code as `src/`, just inlined into one file
+- `results/<name>/` — committed outputs from a kernel run (loss curve plots,
+  example predictions) so progress is visible without re-running anything
 - `data/` — small local artifacts only (e.g. `train.csv`, `train_series.csv`
   metadata pulled via the Kaggle API); actual DICOMs are NOT stored here
   (gitignored, too large — work with them inside Kaggle Notebooks)
@@ -60,6 +68,29 @@ Repo scaffolded, Kaggle API working, metadata pulled locally. First real numbers
 Next: build the smallest possible end-to-end pipeline (train on the 58 labeled
 studies only, one series per study, simple CNN) to get a real `submission.csv`
 out the door, before touching label extraction from reports or fancier models.
+
+## Results
+
+### v1 — baseline MIL model, 58 labeled studies only
+
+A from-scratch CNN (no pretrained weights), multi-instance-learning over up to
+3 series/study, trained for 20 epochs on just the 58 expert-labeled studies.
+Goal for v1 was purely "does the whole pipeline run end to end and produce a
+valid submission" — not a competitive score.
+
+![training loss curve](results/v1/loss_curve.png)
+
+Training loss falls steadily (0.638 → 0.593) and hadn't plateaued yet at
+epoch 20 — the run was mechanically healthy. But a closer look at the
+predictions (`results/v1/submission_example.csv`) shows what that loss number
+doesn't: the model's *average* predicted probability per label correlates
+**0.95** with that label's raw prevalence in the 58 training studies. In other
+words, at this stage it has mostly learned "guess close to the training
+average for each label," not yet real per-image visual signal — expected and
+diagnosable with only 58 training examples, a from-scratch backbone, and no
+held-out validation yet to even measure real generalization. That gap is
+exactly what the next steps (validation split, more training data via
+report-derived labels, a pretrained backbone) are meant to close.
 
 ## License
 

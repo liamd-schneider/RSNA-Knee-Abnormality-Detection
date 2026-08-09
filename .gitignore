@@ -4,6 +4,11 @@ data/*
 *.dcm
 *.csv
 !requirements.txt
+!results/**/*.csv
+
+# model checkpoints (kept out of git history; too large/frequent to version)
+*.pt
+*.pth
 
 # kaggle credentials
 kaggle.json

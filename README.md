@@ -19,8 +19,7 @@ Metric: macro-averaged ROC AUC across the 12 labels.
 
 ## Why the workflow looks like this
 
-The dataset is ~570 GB of DICOMs, and this machine has no GPU / local Python
-setup. So the split is:
+The dataset is ~570 GB of DICOMs, and this machine has no GPU. So the split is:
 
 - **Kaggle Notebooks** (browser, free GPU quota, data pre-mounted): where actual
   EDA-on-full-data, training, and submission notebooks run.
@@ -36,6 +35,28 @@ setup. So the split is:
   metadata pulled via the Kaggle API); actual DICOMs are NOT stored here
   (gitignored, too large — work with them inside Kaggle Notebooks)
 
-## Status
+## Setup (local)
 
-Just getting started (2026-08-09). See commit history / notes for progress.
+```
+pip install -r requirements.txt
+# Kaggle API token saved to ~/.kaggle/access_token (not part of this repo)
+kaggle competitions download -c rsna-knee-abnormality-detection -f train.csv -p data/
+kaggle competitions download -c rsna-knee-abnormality-detection -f train_series.csv -p data/
+python src/eda.py
+```
+
+## Status (2026-08-09)
+
+Repo scaffolded, Kaggle API working, metadata pulled locally. First real numbers:
+
+- 4,407 training studies, only **58** carry the 12 expert labels — the rest have
+  only the free-text report. This is the central problem to solve (see
+  `notebooks/reference-notes.md`).
+- 24,371 series total, ~5.5 series per study on average.
+- Label prevalence among the 58 labeled studies is fairly balanced (roughly
+  15-60% positive per label, Effusion most common, MCL least common) — no
+  extreme class imbalance to fight there, at least on this tiny labeled slice.
+
+Next: build the smallest possible end-to-end pipeline (train on the 58 labeled
+studies only, one series per study, simple CNN) to get a real `submission.csv`
+out the door, before touching label extraction from reports or fancier models.

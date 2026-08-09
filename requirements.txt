@@ -1,0 +1,8 @@
+# For local scripting/EDA against small metadata pulls (train.csv, train_series.csv).
+# Heavy training runs on Kaggle Notebooks, which already ship these preinstalled.
+kaggle
+pandas
+numpy
+pydicom
+matplotlib
+scikit-learn

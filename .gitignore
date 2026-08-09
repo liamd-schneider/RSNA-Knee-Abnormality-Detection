@@ -1,0 +1,28 @@
+# data (DICOMs etc. — never commit, work with these inside Kaggle Notebooks)
+data/*
+!data/.gitkeep
+*.dcm
+*.csv
+!requirements.txt
+
+# kaggle credentials
+kaggle.json
+.kaggle/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# notebook checkpoints
+.ipynb_checkpoints/
+
+# ide
+.idea/
+.vscode/
+
+# os
+.DS_Store
+Thumbs.db

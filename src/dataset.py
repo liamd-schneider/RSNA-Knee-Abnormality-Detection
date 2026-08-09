@@ -42,9 +42,19 @@ def pick_series(series_df, k=3):
     return picked
 
 
+def train_val_split(df, val_frac=0.2, seed=42):
+    """Plain random split (not stratified per-label -- with 12 labels and
+    only ~58 studies, stratifying on all of them at once isn't really
+    possible; a fixed seed at least makes the split reproducible run to run).
+    """
+    shuffled = df.sample(frac=1.0, random_state=seed).reset_index(drop=True)
+    n_val = max(1, int(round(len(shuffled) * val_frac)))
+    return shuffled.iloc[n_val:].reset_index(drop=True), shuffled.iloc[:n_val].reset_index(drop=True)
+
+
 class KneeStudyDataset(Dataset):
     def __init__(self, train_csv, train_series_csv, series_root, k_series=3,
-                 img_size=128, max_slices=32, only_labeled=True):
+                 img_size=128, max_slices=32, only_labeled=True, cache=True):
         train = pd.read_csv(train_csv)
         self.series_df = pd.read_csv(train_series_csv)
         self.series_root = series_root
@@ -56,10 +66,20 @@ class KneeStudyDataset(Dataset):
             train = train.dropna(subset=LABELS, how="all")
         self.studies = train.reset_index(drop=True)
 
+        # DICOM decode + resize is the expensive part of __getitem__, and the
+        # images never change between epochs -- without this, a 20-epoch run
+        # re-decodes every study's DICOMs from scratch 20 times over for no
+        # reason. Small enough dataset here (tens of studies, ~160x160) to
+        # just hold every study's tensors in memory after the first read.
+        self._cache = {} if cache else None
+
     def __len__(self):
         return len(self.studies)
 
     def __getitem__(self, idx):
+        if self._cache is not None and idx in self._cache:
+            return self._cache[idx]
+
         row = self.studies.iloc[idx]
         study_uid = row["StudyInstanceUID"]
         label_vals = pd.to_numeric(row[LABELS], errors="coerce").fillna(0.0).to_numpy(dtype=np.float32)
@@ -75,7 +95,11 @@ class KneeStudyDataset(Dataset):
             if vol is None:
                 continue
             tensors.append(torch.from_numpy(vol).unsqueeze(1))  # (S, 1, H, W)
-        return tensors, label
+
+        result = (tensors, label)
+        if self._cache is not None:
+            self._cache[idx] = result
+        return result
 
 
 def collate_studies(batch):

@@ -33,17 +33,29 @@ import time
 # sm_60) isn't supported by the pre-installed torch build, so install one
 # that still ships sm_60 kernels before torch is ever imported.
 if not os.environ.get("KNEE_SKIP_TORCH_INSTALL"):
-    for candidate in ["torch==2.3.1", "torch==2.1.2"]:
+    # torch, torchvision and torchaudio must be installed together and
+    # version-matched -- installing torch alone (as kernels/train_v3 does,
+    # fine there since it never imports torchvision) leaves the
+    # pre-installed torchvision built against a newer torch, and
+    # transformers imports torchvision internally even for a pure-text
+    # model, which then crashes on a missing attribute.
+    CANDIDATES = [
+        ("torch==2.3.1", "torchvision==0.18.1", "torchaudio==2.3.1"),
+        ("torch==2.1.2", "torchvision==0.16.2", "torchaudio==2.1.2"),
+    ]
+    for torch_pkg, vision_pkg, audio_pkg in CANDIDATES:
         try:
-            print(f"[setup] installing {candidate} (cu121, sm_60/P100 support)...", flush=True)
+            print(f"[setup] installing {torch_pkg}+{vision_pkg}+{audio_pkg} "
+                  f"(cu121, sm_60/P100 support)...", flush=True)
             subprocess.run(
-                [sys.executable, "-m", "pip", "install", "--quiet", candidate,
+                [sys.executable, "-m", "pip", "install", "--quiet",
+                 torch_pkg, vision_pkg, audio_pkg,
                  "--index-url", "https://download.pytorch.org/whl/cu121"],
-                check=True, timeout=600,
+                check=True, timeout=900,
             )
             break
         except Exception as e:
-            print(f"[setup] {candidate} install failed ({e}), trying next candidate", flush=True)
+            print(f"[setup] {torch_pkg} install failed ({e}), trying next candidate", flush=True)
     try:
         subprocess.run(
             [sys.executable, "-m", "pip", "install", "--quiet",

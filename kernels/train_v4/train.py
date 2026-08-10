@@ -33,6 +33,7 @@ Local dry run:
 """
 import glob
 import os
+import shutil
 import subprocess
 import sys
 
@@ -82,7 +83,17 @@ OUT_DIR = os.environ.get("KNEE_OUT_DIR", "/kaggle/working")
 # reason to be part of that -- found out the hard way when downloading a
 # failed run's output pulled down 250+ MB of cache files before it got to
 # the one log worth reading.
-CACHE_DIR = os.environ.get("KNEE_CACHE_DIR", "/kaggle/temp/tensor_cache")
+#
+# tempfile.gettempdir() rather than a guessed "/kaggle/..." path: this run
+# died silently (no traceback -- consistent with an out-of-space/OOM kill,
+# not a Python exception) after processing a few hundred studies' worth of
+# cache writes, at a slightly different study count each time, which points
+# at resource exhaustion rather than a specific bad input. Guessing at an
+# unconfirmed Kaggle-specific directory was exactly the kind of assumption
+# that causes this -- /tmp always exists and is never guessed at.
+import tempfile  # noqa: E402
+CACHE_DIR = os.environ.get("KNEE_CACHE_DIR", os.path.join(tempfile.gettempdir(), "knee_tensor_cache"))
+MIN_FREE_GB_FOR_CACHE = 3.0  # below this, stop writing new cache entries rather than risk the run
 
 
 def find_input_dir():
@@ -204,6 +215,7 @@ class KneeStudyDataset(Dataset):
         self.series_df = series_df
         self.series_root = series_root
         self.cache_dir = cache_dir
+        self.cache_disabled = False  # flips permanently once disk space runs low
         os.makedirs(cache_dir, exist_ok=True)
 
     def __len__(self):
@@ -234,7 +246,23 @@ class KneeStudyDataset(Dataset):
                 arrays = [npz[k] for k in sorted(npz.files)]
         else:
             arrays = self._decode(study_uid)
-            np.savez(cache_path, **{f"s{i}": a for i, a in enumerate(arrays)})
+            # Caching is a speed optimization, not a correctness requirement --
+            # a write that fails (disk full) or that would push free space
+            # below the safety margin must never take the training run down
+            # with it. Once disabled it stays disabled for the rest of this
+            # dataset's lifetime rather than re-checking every single item.
+            if not self.cache_disabled:
+                try:
+                    free_gb = shutil.disk_usage(self.cache_dir).free / 1024 ** 3
+                    if free_gb < MIN_FREE_GB_FOR_CACHE:
+                        self.cache_disabled = True
+                        print(f"[cache] only {free_gb:.1f} GB free, disabling further "
+                              f"cache writes (falling back to re-decode every epoch)", flush=True)
+                    else:
+                        np.savez_compressed(cache_path, **{f"s{i}": a for i, a in enumerate(arrays)})
+                except OSError as e:
+                    self.cache_disabled = True
+                    print(f"[cache] write failed ({e}), disabling further cache writes", flush=True)
 
         tensors = [torch.from_numpy(a).unsqueeze(1) for a in arrays]
         return tensors, label, study_uid
@@ -361,18 +389,25 @@ def main():
         model.train()
         epoch_losses = []
         for i in range(len(train_ds)):
-            series_list, label, uid = train_ds[i]
-            if not series_list:
-                continue
-            series_list = [s.to(device) for s in series_list]
-            label = label.unsqueeze(0).to(device)
+            try:
+                series_list, label, uid = train_ds[i]
+                if not series_list:
+                    continue
+                series_list = [s.to(device) for s in series_list]
+                label = label.unsqueeze(0).to(device)
 
-            opt.zero_grad()
-            logits = model.forward_batch([series_list])
-            loss = loss_fn(logits, label)
-            loss.backward()
-            opt.step()
-            epoch_losses.append(loss.item())
+                opt.zero_grad()
+                logits = model.forward_batch([series_list])
+                loss = loss_fn(logits, label)
+                loss.backward()
+                opt.step()
+                epoch_losses.append(loss.item())
+            except Exception as e:
+                # One bad study (decode error the DICOM-level guards didn't
+                # catch, a one-off CUDA hiccup, ...) must not take the whole
+                # multi-hour run down with it -- skip it and keep going.
+                print(f"  [warn] study {i} failed ({type(e).__name__}: {e}), skipping", flush=True)
+                continue
 
             if (i + 1) % 200 == 0:
                 print(f"  [epoch {epoch+1}] {i+1}/{len(train_ds)} studies, "

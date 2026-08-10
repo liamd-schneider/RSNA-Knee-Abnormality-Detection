@@ -182,6 +182,18 @@ unlabeled studies — not as good as the 58 real expert labels, but a real
 step up from training on 46 studies alone. `kernels/extract_labels_v1_full`
 runs the same, already-validated prompt over those 4,349 studies.
 
+That full run finished after ~4.7h at a steady ~0.24 studies/s (batched
+generation, 3B model on a P100): **4,349/4,349 studies processed, 369
+(8.5%) parse failures** — consistent with the 58-study validation run's
+~10%, so the failure rate isn't an artifact of the smaller sample. 3,980
+studies came back with usable extracted labels, feeding directly into
+`kernels/train_v4` capped at 1,500 of them (see above for why not all
+3,980). One real gap found running this at full scale: the script only
+writes its output CSV once, after all 4,349 studies are done, rather than
+checkpointing incrementally — a run killed by Kaggle's session time limit
+partway through would have lost everything rather than a partial result.
+Worth fixing before running anything this long again.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

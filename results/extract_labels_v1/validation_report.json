@@ -1,0 +1,81 @@
+{
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "n_gold": 58,
+  "n_parse_failed": 6,
+  "mean_accuracy": 0.7586206896551723,
+  "mean_f1": 0.6374406542477468,
+  "per_label": {
+    "ACL": {
+      "accuracy": 0.7241379310344828,
+      "f1": 0.68,
+      "positive_rate_true": 0.41379310344827586,
+      "positive_rate_pred": 0.4482758620689655
+    },
+    "MCL": {
+      "accuracy": 0.8103448275862069,
+      "f1": 0.5217391304347826,
+      "positive_rate_true": 0.15517241379310345,
+      "positive_rate_pred": 0.2413793103448276
+    },
+    "Medial Meniscus": {
+      "accuracy": 0.6724137931034483,
+      "f1": 0.6885245901639344,
+      "positive_rate_true": 0.4482758620689655,
+      "positive_rate_pred": 0.603448275862069
+    },
+    "Lateral Meniscus": {
+      "accuracy": 0.7931034482758621,
+      "f1": 0.76,
+      "positive_rate_true": 0.39655172413793105,
+      "positive_rate_pred": 0.46551724137931033
+    },
+    "Medial OA": {
+      "accuracy": 0.8793103448275862,
+      "f1": 0.7407407407407407,
+      "positive_rate_true": 0.25862068965517243,
+      "positive_rate_pred": 0.20689655172413793
+    },
+    "Lateral OA": {
+      "accuracy": 0.9137931034482759,
+      "f1": 0.7619047619047619,
+      "positive_rate_true": 0.1896551724137931,
+      "positive_rate_pred": 0.1724137931034483
+    },
+    "PF OA": {
+      "accuracy": 0.6551724137931034,
+      "f1": 0.4444444444444444,
+      "positive_rate_true": 0.3620689655172414,
+      "positive_rate_pred": 0.25862068965517243
+    },
+    "Effusion": {
+      "accuracy": 0.6206896551724138,
+      "f1": 0.7105263157894737,
+      "positive_rate_true": 0.603448275862069,
+      "positive_rate_pred": 0.7068965517241379
+    },
+    "Synovitis": {
+      "accuracy": 0.6551724137931034,
+      "f1": 0.5652173913043478,
+      "positive_rate_true": 0.46551724137931033,
+      "positive_rate_pred": 0.3275862068965517
+    },
+    "Baker's": {
+      "accuracy": 0.8275862068965517,
+      "f1": 0.6428571428571429,
+      "positive_rate_true": 0.20689655172413793,
+      "positive_rate_pred": 0.27586206896551724
+    },
+    "Contusion": {
+      "accuracy": 0.7586206896551724,
+      "f1": 0.5333333333333333,
+      "positive_rate_true": 0.3275862068965517,
+      "positive_rate_pred": 0.1896551724137931
+    },
+    "Fracture": {
+      "accuracy": 0.7931034482758621,
+      "f1": 0.6,
+      "positive_rate_true": 0.3103448275862069,
+      "positive_rate_pred": 0.20689655172413793
+    }
+  }
+}

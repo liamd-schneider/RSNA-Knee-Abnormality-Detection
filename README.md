@@ -143,6 +143,45 @@ pretrained backbone, in that order — a from-scratch CNN on 46 examples
 structurally cannot generalize much better than this, no matter how long
 it trains.
 
+### Report-derived labels (v1) — validated before trusting
+
+4,349 of the 4,407 studies have no expert label, only a free-text report
+(Spanish, French, English, and others — `kernels/extract_labels_v1/extract.py`
+found that `train.csv` is **latin-1 encoded, not UTF-8**; reading it with
+pandas' default silently mangled every accented character in that column
+instead of raising). `notebooks/reference-notes.md`'s top-scoring public
+solution used a large LLM to turn those reports into labels; the same idea
+here, sized to what actually runs on Kaggle's free GPU: `Qwen/Qwen2.5-3B-Instruct`,
+batched, greedy-decoded, with a hand-written prompt covering all 12
+findings' clinical definitions (broadened Synovitis to include Hoffa fat
+pad impingement/plica syndrome, effusion counts as present even at "trace"
+amounts, Contusion requires a described traumatic pattern rather than
+ordinary degenerative marrow edema, Fracture includes avulsion/insufficiency
+fractures).
+
+Same rule as the reference solution: never trust an extraction prompt on
+the unlabeled studies before checking it against the studies that *do* have
+real labels. `kernels/extract_labels_v1` runs the extractor on only the 58
+gold-labeled studies and scores it against their real labels first:
+
+- **75.9% mean accuracy, 0.64 mean F1** across the 12 labels
+  (`results/extract_labels_v1/validation_report.json`) — smaller than the
+  reference solution's 35B-model result (83.3%), which tracks with using a
+  ~10x smaller, free-to-run model.
+- 11 of 12 labels clearly beat the naive "always predict the majority
+  class" baseline — real signal, not noise. The one exception is MCL
+  (81.0% vs. an 84.5% majority baseline: MCL is rare enough in this sample
+  that always guessing "no MCL injury" edges out the model on raw accuracy,
+  though its 0.52 F1 shows it is finding real positives, just with a
+  costly false-positive rate).
+- ~10% of the 58 reports didn't come back as valid JSON and were
+  conservatively defaulted to all-negative rather than silently guessed.
+
+Good enough to trust as a *weaker, soft* label source for the 4,349
+unlabeled studies — not as good as the 58 real expert labels, but a real
+step up from training on 46 studies alone. `kernels/extract_labels_v1_full`
+runs the same, already-validated prompt over those 4,349 studies.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

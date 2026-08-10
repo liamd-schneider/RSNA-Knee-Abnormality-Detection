@@ -1,0 +1,14 @@
+{
+  "id": "liamschneider0907/rsna-knee-extract-labels-v1-full",
+  "title": "RSNA Knee - extract labels v1 full",
+  "code_file": "extract.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "competition_sources": ["rsna-knee-abnormality-detection"],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

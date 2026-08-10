@@ -41,8 +41,16 @@ def read_series(series_dir, img_size=IMG_SIZE, max_slices=MAX_SLICES):
 
     slices = []
     for f in files:
-        ds = pydicom.dcmread(f)
-        arr = ds.pixel_array.astype(np.float32)
+        try:
+            ds = pydicom.dcmread(f)
+            arr = ds.pixel_array.astype(np.float32)
+        except Exception:
+            # A handful of DICOMs in this corpus have truncated/corrupted
+            # pixel data (pydicom raises ValueError on the byte-count
+            # mismatch) -- one bad slice out of thousands shouldn't crash a
+            # run hours into training, so it's dropped and the rest of the
+            # series is used instead.
+            continue
 
         # DICOM stores raw sensor values; RescaleSlope/Intercept convert them
         # to the actual physical intensity the scanner measured.
@@ -60,6 +68,9 @@ def read_series(series_dir, img_size=IMG_SIZE, max_slices=MAX_SLICES):
         # field that actually encodes where a slice sits in the stack.
         inst = getattr(ds, "InstanceNumber", None)
         slices.append((int(inst) if inst is not None else 0, arr))
+
+    if not slices:
+        return None
 
     slices.sort(key=lambda x: x[0])
     vol = np.stack([a for _, a in slices])

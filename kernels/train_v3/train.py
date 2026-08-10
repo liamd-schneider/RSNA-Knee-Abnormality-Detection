@@ -113,8 +113,14 @@ def read_series(series_dir, img_size=IMG_SIZE, max_slices=MAX_SLICES):
         return None
     slices = []
     for f in files:
-        ds = pydicom.dcmread(f)
-        arr = ds.pixel_array.astype(np.float32)
+        try:
+            ds = pydicom.dcmread(f)
+            arr = ds.pixel_array.astype(np.float32)
+        except Exception:
+            # A handful of DICOMs in this corpus have truncated/corrupted
+            # pixel data -- drop the bad slice rather than crash the whole
+            # run over it.
+            continue
         slope = float(getattr(ds, "RescaleSlope", 1.0) or 1.0)
         intercept = float(getattr(ds, "RescaleIntercept", 0.0) or 0.0)
         arr = arr * slope + intercept
@@ -122,6 +128,8 @@ def read_series(series_dir, img_size=IMG_SIZE, max_slices=MAX_SLICES):
             arr = arr.max() - arr
         inst = getattr(ds, "InstanceNumber", None)
         slices.append((int(inst) if inst is not None else 0, arr))
+    if not slices:
+        return None
     slices.sort(key=lambda x: x[0])
     vol = np.stack([a for _, a in slices])
     lo, hi = np.percentile(vol, [1, 99])

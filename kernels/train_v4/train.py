@@ -77,7 +77,12 @@ SEED = 42
 MAX_EXTRA = int(os.environ.get("KNEE_MAX_EXTRA", "1500"))
 
 OUT_DIR = os.environ.get("KNEE_OUT_DIR", "/kaggle/working")
-CACHE_DIR = os.environ.get("KNEE_CACHE_DIR", os.path.join(OUT_DIR, "tensor_cache"))
+# Deliberately NOT under OUT_DIR: /kaggle/working is uploaded as the kernel's
+# output when the run ends, and the cache (thousands of .npz files) has no
+# reason to be part of that -- found out the hard way when downloading a
+# failed run's output pulled down 250+ MB of cache files before it got to
+# the one log worth reading.
+CACHE_DIR = os.environ.get("KNEE_CACHE_DIR", "/kaggle/temp/tensor_cache")
 
 
 def find_input_dir():
@@ -135,8 +140,15 @@ def read_series(series_dir, img_size=IMG_SIZE, max_slices=MAX_SLICES):
         return None
     slices = []
     for f in files:
-        ds = pydicom.dcmread(f)
-        arr = ds.pixel_array.astype(np.float32)
+        try:
+            ds = pydicom.dcmread(f)
+            arr = ds.pixel_array.astype(np.float32)
+        except Exception:
+            # A handful of DICOMs in this corpus have truncated/corrupted
+            # pixel data -- drop the bad slice rather than crash the whole
+            # run over it (found the hard way: this killed a training run
+            # ~40 min in, at study 800/1546).
+            continue
         slope = float(getattr(ds, "RescaleSlope", 1.0) or 1.0)
         intercept = float(getattr(ds, "RescaleIntercept", 0.0) or 0.0)
         arr = arr * slope + intercept
@@ -144,6 +156,8 @@ def read_series(series_dir, img_size=IMG_SIZE, max_slices=MAX_SLICES):
             arr = arr.max() - arr
         inst = getattr(ds, "InstanceNumber", None)
         slices.append((int(inst) if inst is not None else 0, arr))
+    if not slices:
+        return None
     slices.sort(key=lambda x: x[0])
     vol = np.stack([a for _, a in slices])
     lo, hi = np.percentile(vol, [1, 99])

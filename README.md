@@ -194,6 +194,42 @@ checkpointing incrementally — a run killed by Kaggle's session time limit
 partway through would have lost everything rather than a partial result.
 Worth fixing before running anything this long again.
 
+### v4 — same model, 34x more training studies
+
+46 gold + 1,500 extracted-label studies (1,546 total) vs. v3's 46 alone,
+same from-scratch CNN, validated on the same 12 held-out gold studies.
+Cost some real debugging first: the first attempt failed outright
+(`enable_internet` was accidentally left `false`, blocking the same
+torch/P100 install v3 needs); the second died silently ~38 minutes in with
+no traceback, and the third died again at a different point with the same
+no-traceback pattern — both consistent with an out-of-space/OOM kill from
+the disk-backed tensor cache (a guessed, unconfirmed `/kaggle/temp/...`
+path, uncompressed `.npz` files, no ceiling on writes). Fixed by moving the
+cache to `tempfile.gettempdir()`, switching to `np.savez_compressed`,
+disabling further cache writes once free disk drops below 3 GB instead of
+crashing, and wrapping each study's training step in try/except so one bad
+study can't take an hours-long run down with it. Also found and fixed,
+separately: a single DICOM in the larger corpus had corrupted pixel data
+and crashed `read_series` outright — v1-v3 never hit this because they only
+ever touched the 58 gold studies' DICOMs.
+
+![train loss vs val AUC](results/v4/history_curve.png)
+
+With that fixed, the run itself: **best val macro AUC 0.541 at epoch 4**
+(vs. v3's best of 0.430, and v3 never once crossed the 0.5 random line).
+Real, if modest, improvement — but not a clean one. The curve peaks at
+epoch 4 and drifts back down to 0.457 by epoch 8, and per-label AUC at the
+final epoch is all over the place (`Medial OA` 0.66, `Effusion` 0.19).
+Given only 12 validation studies, individual epoch-to-epoch and per-label
+swings are still mostly noise (see v3's writeup) — the one thing worth
+reading here is the aggregate level: v4 hovers *around* 0.5 instead of
+*below* it like v3 consistently did, which is a real if modest signal that
+more data helps, but 34x more data still isn't enough to fix a
+from-scratch CNN's fundamental problem. That's exactly the case for
+DINOv2 (v5, next): a pretrained backbone is a different lever than more
+data, not a substitute for it, and the plan is both, not one instead of
+the other.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

@@ -1,0 +1,72 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.4907288663041083,
+      "val_macro_auc": 0.44339947089947096,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.48447856366788583,
+      "val_macro_auc": 0.4687136243386244,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.47750749774903717,
+      "val_macro_auc": 0.4624206349206349,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.47133169579108813,
+      "val_macro_auc": 0.5414814814814816,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.4664937715162975,
+      "val_macro_auc": 0.5003703703703704,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.4628553784140331,
+      "val_macro_auc": 0.5000496031746031,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.45999595506013136,
+      "val_macro_auc": 0.4932208994708994,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.4581513317713916,
+      "val_macro_auc": 0.4572387566137566,
+      "n_labels_scored": 10
+    }
+  ],
+  "best_val_macro_auc": 0.5414814814814816,
+  "best_epoch": 4,
+  "final_per_label_auc": {
+    "ACL": 0.37037037037037035,
+    "MCL": 0.4814814814814815,
+    "Medial Meniscus": 0.3142857142857143,
+    "Lateral Meniscus": 0.5625,
+    "Medial OA": 0.65625,
+    "PF OA": 0.59375,
+    "Effusion": 0.1875,
+    "Synovitis": 0.40625,
+    "Baker's": 0.5,
+    "Contusion": 0.5
+  },
+  "n_train": 1546,
+  "n_val": 12,
+  "n_extracted_used": 1500,
+  "max_extra": 1500,
+  "torch_version": "2.3.1+cu121",
+  "device": "cuda"
+}

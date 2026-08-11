@@ -230,6 +230,46 @@ DINOv2 (v5, next): a pretrained backbone is a different lever than more
 data, not a substitute for it, and the plan is both, not one instead of
 the other.
 
+### v5 — DINOv2 backbone + geometric slice order + laterality normalization
+
+Identical data to v4 (same 46 gold + 1,500 extracted training studies, same
+12 held-out gold validation studies, same everything except the model) so
+the comparison isolates what changed: a pretrained `facebook/dinov2-small`
+backbone (only the last 6 transformer blocks + final layernorm trainable,
+at a 100x lower learning rate than the head) instead of v1-v4's
+from-scratch CNN, plus two data-quality fixes carried over from analysing
+two ~0.9-scoring public solutions — true geometric slice ordering
+(patient-space position, not `InstanceNumber`) and laterality
+normalization (every study mirrored onto a left-knee convention).
+
+![train loss vs val AUC](results/v5/history_curve.png)
+
+**Best val macro AUC: 0.700 at epoch 6** — up from v4's 0.541 and v3's
+0.430, and this time the curve is the clean, healthy shape that's been
+missing every run before this one: training loss falls smoothly *and* the
+held-out AUC climbs alongside it, ending at its best value on the very
+last epoch rather than peaking early and drifting back down. That last
+part matters: it means this run stopped before it was done improving, not
+because it plateaued — more epochs is a real, cheap next lever, separate
+from anything architectural.
+
+Per-label AUC at the final epoch: `MCL` 0.93, `PF OA` 0.91, `Baker's`
+0.90, `ACL` 0.81 are strong; `Medial OA` 0.66, `Effusion` 0.63, `Synovitis`
+0.59 are respectable; `Medial Meniscus` 0.51, `Lateral Meniscus` 0.56,
+`Contusion` 0.50 are near chance. As with every per-label number in this
+project so far, 12 validation studies makes any single label noisy — but
+the aggregate jump from v4 is large enough (0.541 → 0.700) that it isn't
+explained by that noise alone.
+
+This is the first run in the project where the two things the README has
+been tracking since v1 — training loss and held-out generalization — moved
+together instead of diverging. Concretely confirms the diagnosis made back
+in v3: the from-scratch CNN's problem was never "not enough data," it was
+"no prior visual knowledge to build on." Next, cheapest first: more epochs
+(this run stopped while still improving), then more of the 3,980 usable
+extracted-label studies (only 1,500 used so far), then ensembling multiple
+runs — the plan from the start, not a new one.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

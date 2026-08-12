@@ -265,10 +265,46 @@ This is the first run in the project where the two things the README has
 been tracking since v1 — training loss and held-out generalization — moved
 together instead of diverging. Concretely confirms the diagnosis made back
 in v3: the from-scratch CNN's problem was never "not enough data," it was
-"no prior visual knowledge to build on." Next, cheapest first: more epochs
-(this run stopped while still improving), then more of the 3,980 usable
-extracted-label studies (only 1,500 used so far), then ensembling multiple
-runs — the plan from the start, not a new one.
+"no prior visual knowledge to build on."
+
+### v6 — scaling v5 up made it worse, not better
+
+The obvious next move: all ~3,980 usable extracted-label studies instead
+of v5's 1,500, and 15 epochs instead of 6 (v5's curve was still climbing).
+Both changed at once, which is a departure from every other step in this
+project — and turned out to be exactly why the result is hard to read
+cleanly.
+
+![train loss vs val AUC](results/v6/history_curve.png)
+
+**Best val macro AUC: 0.660 at epoch 15 — below v5's 0.700, not above it.**
+Train loss falls dramatically and smoothly the whole run (0.473 → 0.069,
+far lower than v5 ever reached), while held-out AUC just oscillates in a
+0.62–0.66 band with no real trend — the overfitting pattern from v1-v4 is
+back, just in a new form: not from too little data, but from too many
+gradient updates (4,026 studies × 15 epochs ≈ 60k study-updates vs. v5's
+1,546 × 6 ≈ 9k) over labels that are only ~76% accurate to begin with. The
+mechanism this points at: the more the trainable last 6 transformer blocks
+get updated against noisy pseudo-labels, the more they drift toward
+fitting that noise specifically, rather than the real signal the 12 gold
+validation studies are measuring.
+
+The honest caveat: **two things changed at once here (data volume and
+epoch count), so this result alone can't say which one caused the
+regression, or whether it's their combination.** Every other step in this
+project changed one variable at a time on purpose, specifically to avoid
+this ambiguity — v6 didn't, and this is the result. A real gap this run
+also exposed: `model_v6.pt` saves whatever epoch the run *ends* on, not
+the epoch with the best validation AUC — harmless in v5 and v6 by
+coincidence (both runs' last epoch happened to also be their best), but
+not something to keep relying on by luck.
+
+Next, to actually answer "was it the data or the epochs": rerun with only
+one of the two changes at a time — v5's 6 epochs but the full ~3,980
+studies, or v5's 1,500 studies but 15 epochs — plus save the
+best-val-AUC checkpoint instead of the last one. Not done yet; a
+deliberate stopping point to write up what v6 actually showed before
+spending more compute chasing it.
 
 ## License
 

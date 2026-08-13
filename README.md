@@ -337,10 +337,33 @@ longer doesn't compound the way clean labeled data would — past some
 point it teaches the model the extraction errors instead of the
 underlying findings. v5's original, more conservative settings (1,500
 studies, 6 epochs) remain the best recipe found in this project so far.
-Worth trying next, cheaper than either more data or more epochs: weighting
-the loss so the 46 real gold-labeled studies count for more than the
-extracted ones per training step, rather than treating both sources as
-equally trustworthy.
+
+### v8 — loss-weighting gold vs. extracted labels: slower, not worse
+
+The direct response to v7's finding: weight each study's loss by its label
+source instead of trusting a gold-labeled and an extracted-label study
+equally — gold studies at 1.0, extracted at 0.3, otherwise v5's exact
+settings (1,500 studies, 6 epochs).
+
+![val macro AUC: v5 vs v8](results/v8/v8_compare.png)
+
+**Best val macro AUC 0.681 at epoch 4 — below v5's 0.700, not above it**,
+but the curve shape tells a more specific story than "this didn't work."
+v8 starts *slower* than v5 (0.486 vs. 0.553 at epoch 1) since down-
+weighting the majority of the training data to 0.3 effectively shrinks the
+gradient signal from most of it — but it catches up by epoch 3-4 and
+briefly *leads* v5 at epoch 4-5, before v5 pulls ahead again by epoch 6
+while still climbing. Read together with v7-moreepochs (which showed 15
+epochs on this same 1,500-study set costs almost nothing and peaks around
+epoch 11): **six epochs may simply not have been enough time for the
+weighted recipe to pay off**, not evidence the idea itself is wrong.
+
+Not yet tried, the natural next check: v8's exact settings with more
+epochs (12-15, matching what v7-moreepochs showed this data size tolerates
+well) to see whether the weighted approach still catches up and surpasses
+v5's peak, or plateaus below it even given the time. Left as an open
+question rather than assumed — this project has been wrong before betting
+on "more training will obviously help" (see v6).
 
 ## License
 

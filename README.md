@@ -365,6 +365,34 @@ v5's peak, or plateaus below it even given the time. Left as an open
 question rather than assumed — this project has been wrong before betting
 on "more training will obviously help" (see v6).
 
+### v9 — settling it: loss weighting plateaus below the unweighted baseline
+
+v8's exact loss weights (gold=1.0, extracted=0.3), 15 epochs instead of 6.
+
+![val macro AUC: unweighted vs. weighted](results/v9/v9_compare.png)
+
+**Best val macro AUC 0.690 at epoch 11 — up from v8's 0.681 with more
+time, but still below both unweighted runs** (v5: 0.700, v7-moreepochs:
+0.696). The plot makes the pattern hard to argue with: at every epoch
+count checked, the weighted recipe (green/red) sits at or below the
+matching unweighted one (blue/orange), and v9 shows the same
+overfitting-after-peak decline v7-moreepochs did (0.690 at epoch 11 →
+0.611 by epoch 15) — more epochs didn't change *when* this data size
+starts overfitting, just confirmed the weighted recipe's ceiling sits
+slightly lower.
+
+This settles the open question from v8: it wasn't an epoch-budget problem.
+**Down-weighting extracted studies to 0.3 in the loss is a genuine, if
+small, net negative** at this ratio — not the fix v7's finding suggested
+it might be. A plausible reason in hindsight: down-weighting doesn't
+remove the noisy labels' wrong signal, it just makes the model correct
+for it more slowly, while doing nothing to stop it from eventually being
+learned. **v5's original, unweighted 1,500-study/6-epoch recipe remains
+the best one found in this project.** Loss weighting is parked here
+rather than tuned further (e.g. trying other ratios) — cheaper, more
+promising levers (test-time augmentation, physical-scale cropping,
+ensembling) haven't been tried yet at all.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

@@ -1,0 +1,119 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.5089763427661662,
+      "val_macro_auc": 0.4674007936507937,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.4556258467783884,
+      "val_macro_auc": 0.552797619047619,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.43427235052293167,
+      "val_macro_auc": 0.6237301587301587,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.40474411684002864,
+      "val_macro_auc": 0.6171263227513227,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.36765714537233046,
+      "val_macro_auc": 0.6018154761904763,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.32668632249387625,
+      "val_macro_auc": 0.6123048941798943,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.2870595323924204,
+      "val_macro_auc": 0.6168617724867725,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.25258494307673135,
+      "val_macro_auc": 0.6911805555555556,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.21173821741994328,
+      "val_macro_auc": 0.669265873015873,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.17096342724111438,
+      "val_macro_auc": 0.6808664021164021,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.15075232063093902,
+      "val_macro_auc": 0.6963227513227513,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.12048509858824599,
+      "val_macro_auc": 0.6830621693121695,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.09737762703590032,
+      "val_macro_auc": 0.6676157407407408,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.08418583865162942,
+      "val_macro_auc": 0.6567724867724868,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.07511903171603386,
+      "val_macro_auc": 0.648207671957672,
+      "n_labels_scored": 10
+    }
+  ],
+  "best_val_macro_auc": 0.6963227513227513,
+  "best_epoch": 11,
+  "final_per_label_auc": {
+    "ACL": 0.7407407407407407,
+    "MCL": 0.6296296296296295,
+    "Medial Meniscus": 0.7428571428571429,
+    "Lateral Meniscus": 0.65625,
+    "Medial OA": 0.71875,
+    "PF OA": 0.84375,
+    "Effusion": 0.25,
+    "Synovitis": 0.53125,
+    "Baker's": 0.9,
+    "Contusion": 0.9500000000000001
+  },
+  "n_train": 1546,
+  "n_val": 12,
+  "n_extracted_used": 1500,
+  "max_extra": 1500,
+  "dinov2_model": "facebook/dinov2-small",
+  "unfreeze_last": 6,
+  "torch_version": "2.3.1+cu121",
+  "device": "cuda",
+  "run_name": "moreepochs",
+  "epochs_configured": 15,
+  "stopped_early_time_budget": false
+}

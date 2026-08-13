@@ -306,6 +306,42 @@ best-val-AUC checkpoint instead of the last one. Not done yet; a
 deliberate stopping point to write up what v6 actually showed before
 spending more compute chasing it.
 
+### v7 — isolating v6's regression: it's mostly the data, and it compounds
+
+Two reruns, otherwise identical code, each changing exactly one of v6's
+two variables back to v5's setting:
+
+| Run | Studies | Epochs | Best val macro AUC | Best epoch |
+|---|---|---|---|---|
+| v5 | 1,500 | 6 | **0.700** | 6 (still climbing) |
+| v7-moredata | 3,980 | 6 | 0.683 | 4 |
+| v7-moreepochs | 1,500 | 15 | 0.696 | 11 |
+| v6 (both changed) | 3,980 | 15 | 0.660 | 15 |
+
+![val macro AUC by training recipe](results/v7/v7_compare.png)
+
+**More epochs alone barely moved the needle** (0.696 vs. v5's 0.700 — well
+within the noise 12 validation studies produce) **but more data alone did
+measurably hurt** (0.683, a real ~0.017 drop, peaking early at epoch 4
+then flattening rather than climbing like v5 did). And critically,
+**v6's combined drop (0.660) is worse than either change on its own** —
+worse than simply adding the two individual effects would predict. The
+two hurt each other: more epochs gives the model more gradient steps to
+fit the larger pool of noisy pseudo-labels (only ~76% accurate, see the
+extraction section above) specifically, rather than the real signal the
+46 gold-labeled training studies carry.
+
+The actionable read: **the extracted labels are a real but limited
+resource, not a free scaling lever.** Pouring in more of them and training
+longer doesn't compound the way clean labeled data would — past some
+point it teaches the model the extraction errors instead of the
+underlying findings. v5's original, more conservative settings (1,500
+studies, 6 epochs) remain the best recipe found in this project so far.
+Worth trying next, cheaper than either more data or more epochs: weighting
+the loss so the 46 real gold-labeled studies count for more than the
+extracted ones per training step, rather than treating both sources as
+equally trustworthy.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

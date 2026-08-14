@@ -418,6 +418,32 @@ v2 vs. v3). The correct reading is the *within-run delta* (+0.011), not
 the cross-run absolute number. Applied to the actual submission too, so
 the deliverable benefits from this regardless.
 
+### v11 — physical-scale crop: promising, but can't be trusted yet, and here's why
+
+v5's exact training recipe, no TTA; the only change is a 130mm center crop
+(via each series' PixelSpacing) applied before the resize.
+
+**Best val macro AUC 0.719 at epoch 6 (still climbing) — the highest raw
+number in this project so far, above v5's 0.700.** Tempting to call this
+a clean win. It isn't provably one yet, and the reason is worth stating
+plainly: v10 already demonstrated that two runs with the *exact same*
+training configuration as v5 — same data, same epochs, same everything —
+can land 0.033 AUC apart (v5: 0.700, v10's non-TTA baseline: 0.667) purely
+from unseeded random weight initialization. v11's improvement over v5
+(+0.019) is *smaller* than that already-measured noise band. It would be
+overclaiming to call this a confirmed win off one run each.
+
+This surfaces a real gap this project has been carrying since v5: model
+initialization was never seeded, so every cross-run comparison so far
+(v5 vs. v6, v5 vs. v11, etc.) has an unmeasured amount of pure-chance
+variation baked into it that a same-weights comparison (like v10's
+TTA-vs-no-TTA check) sidesteps but a full retrain like v11 can't. Worth
+fixing going forward — and ensembling, next, sidesteps the problem a
+different way: training several seeds and averaging their predictions is
+both the standard way to improve a score *and* the standard way to find
+out how much a given change actually moves it, since the ensemble spread
+directly shows the noise band a single run's number was hiding.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

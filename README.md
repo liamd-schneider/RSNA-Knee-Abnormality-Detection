@@ -393,6 +393,31 @@ rather than tuned further (e.g. trying other ratios) — cheaper, more
 promising levers (test-time augmentation, physical-scale cropping,
 ensembling) haven't been tried yet at all.
 
+### v10 — test-time augmentation: a real, modest gain (and a seed-variance caveat)
+
+v5's exact training recipe (1,500 studies, 6 epochs, no loss weighting),
+unchanged. The new thing: at evaluation, the trained model predicts each
+study 5 times — once on the slices as decoded, four more through a small
+random rotation/scale/shift jitter — and the probabilities get averaged,
+instead of the single fixed-framing prediction every earlier version used.
+
+**The one valid comparison here is TTA vs. no-TTA on the *identical*
+trained weights** (both computed from the same best-epoch checkpoint):
+**0.679 with TTA vs. 0.667 without — a +0.011 gain, small but real**, and
+in the expected direction (averaging several nearby views is a less noisy
+estimate than one fixed crop, the same logic ensembling relies on, just
+applied to input views instead of separate models).
+
+What this run's numbers *can't* say: whether TTA beats v5's 0.700, because
+v10's own non-TTA baseline (0.667) already landed below v5's 0.700 despite
+identical training settings — the model's random weight initialization
+isn't seeded, so v5 and v10 started from different starting points and
+aren't directly comparable in absolute terms (the same effect that
+produced a 0.12 AUC swing between two identically-configured runs back in
+v2 vs. v3). The correct reading is the *within-run delta* (+0.011), not
+the cross-run absolute number. Applied to the actual submission too, so
+the deliverable benefits from this regardless.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

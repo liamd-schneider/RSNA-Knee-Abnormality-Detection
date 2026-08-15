@@ -1,0 +1,84 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.5011460260231467,
+      "val_macro_auc": 0.597526455026455,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.4483249418854347,
+      "val_macro_auc": 0.6352943121693121,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.41884973851836166,
+      "val_macro_auc": 0.6289550264550264,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.3780816556553912,
+      "val_macro_auc": 0.6469907407407407,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.3294077818614779,
+      "val_macro_auc": 0.6718088624338625,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.2801826709525364,
+      "val_macro_auc": 0.680515873015873,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.2271906379370231,
+      "val_macro_auc": 0.6951554232804233,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.1830430549693411,
+      "val_macro_auc": 0.6856878306878308,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.14533809283654225,
+      "val_macro_auc": 0.681220238095238,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.10961883992592643,
+      "val_macro_auc": 0.6574371693121692,
+      "n_labels_scored": 10
+    }
+  ],
+  "best_val_macro_auc": 0.6951554232804233,
+  "best_epoch": 7,
+  "final_per_label_auc": {
+    "ACL": 0.8148148148148149,
+    "MCL": 0.7037037037037037,
+    "Medial Meniscus": 0.5142857142857142,
+    "Lateral Meniscus": 0.5,
+    "Medial OA": 0.84375,
+    "PF OA": 0.75,
+    "Effusion": 0.5,
+    "Synovitis": 0.6875,
+    "Baker's": 1.0,
+    "Contusion": 0.9500000000000001
+  },
+  "n_train": 1546,
+  "n_val": 12,
+  "member_idx": 1,
+  "model_seed": 1001,
+  "no_tta_final_val_macro_auc": 0.6951554232804233,
+  "stopped_early_time_budget": false
+}

@@ -490,6 +490,33 @@ the first number that accounts for its own uncertainty instead of hiding
 it. `results/v12/submission_example.csv` is this project's strongest
 actual submission, built from the 3-member ensemble.
 
+### v13 — a bigger backbone: 0.711 to 0.752
+
+Same 3-member ensemble recipe as v12 (crop + TTA, `torch.manual_seed`
+1000/1001/1002), two changes: `facebook/dinov2-base` (~86M params) instead
+of `-small` (~22M), and 10 epochs per member instead of 6 (safe to raise
+since every member already keeps its best-val-AUC checkpoint regardless of
+how long training runs).
+
+Individual members (TTA): 0.751, 0.726, 0.707 — mean 0.728, spread 0.044
+(wider than v12's 0.027, plausibly the bigger model having more to gain
+or lose per run, not measured precisely enough here to say which).
+**Ensemble: 0.752**, up from v12's 0.711 — a real, sizeable jump matching
+what this project's analysis of the ~0.9-scoring reference notebooks
+predicted early on: a pretrained backbone with more capacity was the
+single most likely lever left. Per-label, several labels are now strong
+in a way they weren't before (`ACL` 0.85, `MCL` 0.85, `Medial OA` 0.91,
+`PF OA` 0.84, `Baker's` 1.0, `Contusion` 0.80); `Effusion` (0.375) and
+`Lateral Meniscus` (0.50) remain weak — worth remembering these are still
+12-study estimates, noisy per label even as the aggregate trend looks
+real and consistent with v12's direction.
+
+`results/v13/submission_example.csv` is now this project's strongest
+submission. Still short of a 0.8 macro AUC; more ensemble members is the
+next natural, lowest-risk lever, since it's already twice paid off
+(v12: 0.709 mean member -> 0.711 ensemble; v13: 0.728 mean member -> 0.752
+ensemble) and doesn't require guessing at another architecture change.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

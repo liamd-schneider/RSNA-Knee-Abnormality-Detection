@@ -444,6 +444,52 @@ both the standard way to improve a score *and* the standard way to find
 out how much a given change actually moves it, since the ensemble spread
 directly shows the noise band a single run's number was hiding.
 
+### v12 — ensembling: the noise band, measured directly, and a trustworthy number at last
+
+Three independently-seeded members (`torch.manual_seed` 1000/1001/1002 —
+model init finally fixed, not left to chance), each v5's training recipe
+plus v11's physical-scale crop, sharing one decoded dataset. Every
+member's predictions get TTA'd (v10) at evaluation, then all three are
+rank-averaged into one ensemble prediction.
+
+![3 seeded members vs. the ensemble](results/v12/v12_members.png)
+
+**The individual members alone answer the question v10 and v11 both had
+to leave open: 0.724, 0.710, 0.698 — a 0.027 AUC spread from nothing but
+random weight initialization**, on the exact same data and recipe. That
+number is now measured directly rather than inferred, and it means
+neither v5's 0.700 nor v11's 0.719 could ever have been read as a
+confirmed win off one run each — both sit inside a band this wide. Every
+single-run comparison earlier in this project (v6 through v9 included)
+carries this same unmeasured uncertainty; it just wasn't visible until an
+ensemble run made it visible by construction.
+
+TTA's effect, averaged across the three members, was a wash here (mean
+0.7107 without TTA -> 0.7087 with) — smaller than v10's own +0.011 and in
+the *opposite* direction for two of the three members. The likely reason:
+`tta_jitter`'s random augmentation isn't seeded either, so TTA's own
+measured effect carries some of the same noise the model-init spread
+does. Consistent with v10's finding in spirit (a small effect, not a
+guaranteed one) but not something a single before/after check can pin
+down precisely.
+
+**The ensemble itself — 0.711 — is the one number in this whole project
+that isn't vulnerable to any of that.** It sits above the mean individual
+member (0.7087) as ensembling is supposed to, though below the single
+luckiest member (0.724) — expected: ensembling trades "might get the
+lucky draw" for "reliably near the middle," which is the point of it, not
+a shortcoming. Per-label, the pattern from every earlier run holds:
+strong on `Baker's` (1.0), `PF OA` (0.906), `Contusion` (0.85); weak on
+`Effusion` (0.453) and both menisci (~0.57-0.58) — still read cautiously
+given only 12 validation studies per label.
+
+**Where this leaves the project:** 0.711 is now the best-supported single
+estimate of this recipe's real performance — not the highest number seen
+(v11's 0.719 still holds that, honestly caveated as possibly noise), but
+the first number that accounts for its own uncertainty instead of hiding
+it. `results/v12/submission_example.csv` is this project's strongest
+actual submission, built from the 3-member ensemble.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

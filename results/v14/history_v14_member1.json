@@ -1,0 +1,84 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.5009586087176227,
+      "val_macro_auc": 0.5841369047619047,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.4488097311275858,
+      "val_macro_auc": 0.6124371693121693,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.4199519710639976,
+      "val_macro_auc": 0.6295800264550265,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.3784807769492519,
+      "val_macro_auc": 0.6425694444444445,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.3294229353380475,
+      "val_macro_auc": 0.6837731481481482,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.2746413709416357,
+      "val_macro_auc": 0.6678339947089947,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.22610849157785548,
+      "val_macro_auc": 0.6906911375661375,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.17932107283772872,
+      "val_macro_auc": 0.7275198412698413,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.1318047248874527,
+      "val_macro_auc": 0.6477050264550266,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.11013237689655302,
+      "val_macro_auc": 0.6889980158730158,
+      "n_labels_scored": 10
+    }
+  ],
+  "best_val_macro_auc": 0.7275198412698413,
+  "best_epoch": 8,
+  "final_per_label_auc": {
+    "ACL": 0.7037037037037037,
+    "MCL": 0.888888888888889,
+    "Medial Meniscus": 0.42857142857142855,
+    "Lateral Meniscus": 0.53125,
+    "Medial OA": 0.96875,
+    "PF OA": 0.8125,
+    "Effusion": 0.625,
+    "Synovitis": 0.71875,
+    "Baker's": 0.9,
+    "Contusion": 0.85
+  },
+  "n_train": 1546,
+  "n_val": 12,
+  "member_idx": 1,
+  "model_seed": 1001,
+  "no_tta_final_val_macro_auc": 0.7275198412698413,
+  "stopped_early_time_budget": false
+}

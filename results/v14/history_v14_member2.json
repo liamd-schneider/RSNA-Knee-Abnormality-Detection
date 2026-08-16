@@ -1,0 +1,84 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.49465136996134246,
+      "val_macro_auc": 0.5880224867724868,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.44246677389575645,
+      "val_macro_auc": 0.6720370370370371,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.4060639471883728,
+      "val_macro_auc": 0.681683201058201,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.35596917697197167,
+      "val_macro_auc": 0.6688227513227514,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.29975426766590996,
+      "val_macro_auc": 0.6781547619047619,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.24722406523042822,
+      "val_macro_auc": 0.6527513227513227,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.19763613212787634,
+      "val_macro_auc": 0.6374437830687831,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.1542695559516098,
+      "val_macro_auc": 0.6762731481481482,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.11951813298232794,
+      "val_macro_auc": 0.7328769841269842,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.09444389586065008,
+      "val_macro_auc": 0.6824305555555557,
+      "n_labels_scored": 10
+    }
+  ],
+  "best_val_macro_auc": 0.7328769841269842,
+  "best_epoch": 9,
+  "final_per_label_auc": {
+    "ACL": 0.9259259259259258,
+    "MCL": 0.7777777777777778,
+    "Medial Meniscus": 0.5714285714285715,
+    "Lateral Meniscus": 0.5625,
+    "Medial OA": 0.84375,
+    "PF OA": 0.8125,
+    "Effusion": 0.4375,
+    "Synovitis": 0.75,
+    "Baker's": 0.9500000000000001,
+    "Contusion": 0.85
+  },
+  "n_train": 1546,
+  "n_val": 12,
+  "member_idx": 2,
+  "model_seed": 1002,
+  "no_tta_final_val_macro_auc": 0.7328769841269842,
+  "stopped_early_time_budget": false
+}

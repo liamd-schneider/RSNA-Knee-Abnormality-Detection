@@ -517,6 +517,31 @@ next natural, lowest-risk lever, since it's already twice paid off
 (v12: 0.709 mean member -> 0.711 ensemble; v13: 0.728 mean member -> 0.752
 ensemble) and doesn't require guessing at another architecture change.
 
+### v14 — 5 members attempted, time budget stopped it at 3 (as designed)
+
+v13's exact recipe, `N_MODELS` raised 3 -> 5 to test whether more members
+compounds the ensembling gain further. It didn't get to find out: the time
+budget (7h, gating each model's start since v12) triggered after 3
+members, and the run stopped cleanly with 3/5 done rather than risking a
+kill mid-training on member 4 — the safety net working exactly as
+designed, at the cost of not answering the question this run set out to
+ask.
+
+Still a useful data point on its own: a *second*, independent 3-member
+DINOv2-base ensemble, different model seeds' actual training outcomes
+despite reusing seeds 1000/1001/1002 (same seed doesn't mean bit-identical
+results on GPU — cuDNN operations aren't fully deterministic unless
+explicitly configured to be, which this project hasn't done). **Ensemble:
+0.758**, close to v13's 0.752 — two independent 3-member runs at this
+recipe landing within 0.006 of each other is itself reassuring evidence
+that ~0.75 is a fairly stable estimate for it, not a lucky single draw.
+
+The real lesson: 3 members × 10 epochs was already close to this project's
+time budget at DINOv2-base's cost. Getting to 5 members needs a smaller
+per-member budget, not a bigger time allowance — v15 tests 5 members at 6
+epochs each (v12's original epoch count) instead of 10, same total
+"member-epoch" budget as this run's 3×10 that fit comfortably.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

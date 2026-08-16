@@ -1,0 +1,48 @@
+{
+  "n_models_configured": 5,
+  "n_models_trained": 3,
+  "model_seeds": [
+    1000,
+    1001,
+    1002
+  ],
+  "individual_best_epoch_auc": [
+    0.6590873015873016,
+    0.7275198412698413,
+    0.7328769841269842
+  ],
+  "individual_no_tta_final_auc": [
+    0.6590873015873016,
+    0.7275198412698413,
+    0.7328769841269842
+  ],
+  "individual_tta_final_auc": [
+    0.685601851851852,
+    0.7427414021164022,
+    0.7481382275132276
+  ],
+  "mean_individual_auc": 0.7254938271604939,
+  "individual_auc_spread": 0.0625363756613756,
+  "ensemble_val_macro_auc": 0.7575347222222224,
+  "ensemble_n_labels": 10,
+  "ensemble_per_label_auc": {
+    "ACL": 0.8518518518518519,
+    "MCL": 0.8703703703703705,
+    "Medial Meniscus": 0.6000000000000001,
+    "Lateral Meniscus": 0.59375,
+    "Medial OA": 0.90625,
+    "PF OA": 0.8125,
+    "Effusion": 0.421875,
+    "Synovitis": 0.71875,
+    "Baker's": 0.9500000000000001,
+    "Contusion": 0.8500000000000001
+  },
+  "n_train": 1546,
+  "n_val": 12,
+  "n_extracted_used": 1500,
+  "max_extra": 1500,
+  "tta_views": 5,
+  "crop_mm": 130.0,
+  "torch_version": "2.3.1+cu121",
+  "device": "cuda"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "liamschneider0907/rsna-knee-baseline-mil-train-v15-base5-6ep",
+  "title": "RSNA Knee - baseline MIL train v15 base5 6ep",
+  "code_file": "train.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "competition_sources": ["rsna-knee-abnormality-detection"],
+  "dataset_sources": [],
+  "kernel_sources": ["liamschneider0907/rsna-knee-extract-labels-v1-full"],
+  "model_sources": []
+}

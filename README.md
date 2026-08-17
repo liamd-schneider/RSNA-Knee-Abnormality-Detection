@@ -542,6 +542,32 @@ per-member budget, not a bigger time allowance — v15 tests 5 members at 6
 epochs each (v12's original epoch count) instead of 10, same total
 "member-epoch" budget as this run's 3×10 that fit comfortably.
 
+### v15 — the answer: epoch count, not member count, is what drove v13's gain
+
+All 5 members finished this time (no time-budget cutoff). **Ensemble:
+0.711** — essentially identical to v12's 0.711, and clearly below
+v13/v14's 0.752/0.758. Individual members (TTA): 0.687, 0.719, 0.688,
+0.710, 0.693 (mean 0.699, spread 0.032) — comparable spread to v12/v13,
+just centred noticeably lower.
+
+This directly settles what v14 couldn't: going from 3 members to 5 at 6
+epochs each added essentially nothing (0.711 -> 0.711), while going from 6
+to 10 epochs at 3 members (v12 -> v13) added +0.041. **DINOv2-base's gain
+over DINOv2-small isn't from ensembling more of it — it's from giving the
+larger, mostly-frozen backbone enough gradient steps to actually adapt.**
+Averaging several undertrained members doesn't substitute for training any
+one of them properly; the earlier assumption that member count and epoch
+count would trade off roughly interchangeably (the reasoning behind v15's
+"same total member-epochs" design) turned out to be wrong. Useful to know
+plainly rather than average away: this project's tables can now say epoch
+budget is the lever, not ensemble width, at the scale tested here.
+
+**Practical upshot:** v13's recipe (3 members, 10 epochs, DINOv2-base) is
+still the project's best-supported result (0.752, corroborated by v14's
+0.758). The next honest step toward 0.8 is pushing epochs further at that
+same 3-member count — not adding more members — since this run just
+showed member count isn't where the remaining gain lives.
+
 ## License
 
 Code in this repo is MIT-licensed (see `LICENSE`). The competition data itself

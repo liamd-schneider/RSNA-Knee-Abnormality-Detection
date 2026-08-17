@@ -1,0 +1,60 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.5010746299875912,
+      "val_macro_auc": 0.5909656084656085,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.44850374808966303,
+      "val_macro_auc": 0.6280621693121693,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.42040448046209866,
+      "val_macro_auc": 0.6460085978835979,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.37956649519142877,
+      "val_macro_auc": 0.6542228835978837,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.3314468332975657,
+      "val_macro_auc": 0.6660085978835979,
+      "n_labels_scored": 10
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.27657148819630617,
+      "val_macro_auc": 0.7279596560846561,
+      "n_labels_scored": 10
+    }
+  ],
+  "best_val_macro_auc": 0.7279596560846561,
+  "best_epoch": 6,
+  "final_per_label_auc": {
+    "ACL": 0.8888888888888888,
+    "MCL": 0.8518518518518519,
+    "Medial Meniscus": 0.4857142857142857,
+    "Lateral Meniscus": 0.5625,
+    "Medial OA": 0.65625,
+    "PF OA": 0.65625,
+    "Effusion": 0.5625,
+    "Synovitis": 0.625,
+    "Baker's": 0.9,
+    "Contusion": 1.0
+  },
+  "n_train": 1546,
+  "n_val": 12,
+  "member_idx": 1,
+  "model_seed": 1001,
+  "no_tta_final_val_macro_auc": 0.7279596560846561,
+  "stopped_early_time_budget": false
+}
